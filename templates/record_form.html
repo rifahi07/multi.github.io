@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ action }} {{ table | capitalize }}</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+<div class="container mt-4 p-4 bg-white rounded shadow">
+  <h3 class="text-center mb-3">{{ action }} {{ table | capitalize }}</h3>
+
+  <form method="POST">
+    {% if record %}
+      {% for col, val in record.items() %}
+        {% if not col.endswith('_id') %}
+          <div class="mb-3">
+            <label class="form-label">{{ col | capitalize }}</label>
+            <input name="{{ col }}" value="{{ val }}" class="form-control">
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      {% if table == 'screen' %}
+        <label>Theatre</label>
+        <select name="theatre_id" class="form-select mb-3">
+          {% for t in theatres %}<option value="{{ t.theatre_id }}">{{ t.theatre_name }}</option>{% endfor %}
+        </select>
+        <input name="screen_name" class="form-control mb-3" placeholder="Screen Name" required>
+      {% elif table == 'showtime' %}
+        <label>Movie</label>
+        <select name="movie_id" class="form-select mb-3">
+          {% for m in movies %}<option value="{{ m.movie_id }}">{{ m.title }}</option>{% endfor %}
+        </select>
+        <label>Screen</label>
+        <select name="screen_id" class="form-select mb-3">
+          {% for s in screens %}<option value="{{ s.screen_id }}">{{ s.screen_name }}</option>{% endfor %}
+        </select>
+        <input type="date" name="show_date" class="form-control mb-3" required>
+        <input type="time" name="show_time" class="form-control mb-3" required>
+      {% else %}
+        <input name="name" class="form-control mb-3" placeholder="Enter details" required>
+      {% endif %}
+    {% endif %}
+    <button type="submit" class="btn btn-success w-100">{{ action }}</button>
+  </form>
+
+  <div class="text-center mt-3">
+    <a href="{{ url_for('view_table', table=table) }}" class="btn btn-secondary">⬅ Back</a>
+  </div>
+</div>
+</body>
+</html>
